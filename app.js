@@ -32,12 +32,20 @@ const loginUsers = [
     password: "admin123",
   },
   {
+    id: "user_jesse",
+    role: "admin",
+    name: "Jesse Ferreira",
+    email: "jesse.ferreira@diario.com",
+    password: "admin.123",
+  },
+  {
     id: "manager_marina",
     role: "manager",
     schoolId: "school_aurora",
     name: "Marina Costa",
     email: "marina.costa@aurora.edu.br",
     password: "gestao123",
+    approved: true,
   },
   {
     id: "manager_otavio",
@@ -46,6 +54,7 @@ const loginUsers = [
     name: "Otávio Lima",
     email: "otavio.lima@rios.edu.br",
     password: "gestao123",
+    approved: true,
   },
   {
     id: "teacher_luana",
@@ -260,7 +269,6 @@ const seedData = {
 };
 
 const state = {
-  selectedLoginRole: "admin",
   currentRole: "admin",
   currentUser: null,
   managerTab: "teachers",
@@ -353,7 +361,7 @@ function showLoginError(message) {
   loginError.classList.add("is-visible");
   loginErrorTimer = window.setTimeout(() => {
     loginError.classList.remove("is-visible");
-  }, 3200);
+  }, 4200);
 }
 
 function ensureActiveSchool() {
@@ -401,9 +409,15 @@ function renderShell() {
   screenTitle.textContent = role.title;
 
   document.querySelectorAll("[data-role-nav]").forEach((button) => {
-    const isVisible = button.dataset.roleNav === state.currentRole;
-    button.hidden = !isVisible;
-    button.classList.toggle("is-active", isVisible);
+    // Admin can access all role panels; others only see their role
+    if (state.currentRole === "admin") {
+      button.hidden = false;
+      button.classList.toggle("is-active", button.dataset.roleNav === state.currentRole);
+    } else {
+      const isVisible = button.dataset.roleNav === state.currentRole;
+      button.hidden = !isVisible;
+      button.classList.toggle("is-active", isVisible);
+    }
   });
 
   renderSchoolSelector();
@@ -460,6 +474,23 @@ function renderAdmin() {
   const managerRows = state.data.schools.length
     ? state.data.schools.map(renderManagerGroup).join("")
     : emptyState("Cadastre uma escola para vincular gestores.");
+
+  const pendingManagers = loginUsers.filter((u) => u.role === "manager" && !u.approved);
+  const pendingHtml = pendingManagers.length
+    ? pendingManagers
+        .map(
+          (m) => `
+            <div class="row pending">
+              <div>
+                <strong>${escapeHtml(m.name)}</strong>
+                <small>${escapeHtml(m.email)} · Pendente</small>
+              </div>
+              <button class="btn" data-approve-manager="${escapeHtml(m.id)}">Aprovar</button>
+            </div>
+          `,
+        )
+        .join("")
+    : "";
 
   return `
     <section class="summary-grid">
@@ -557,6 +588,18 @@ function renderAdmin() {
         </div>
         <div class="panel-body list">
           ${managerRows}
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <h3>Gestores pendentes</h3>
+            <p>Aprovar novos gestores para liberar acesso.</p>
+          </div>
+        </div>
+        <div class="panel-body list">
+          ${pendingHtml || emptyState("Nenhum gestor pendente.")}
         </div>
       </article>
     </section>
@@ -1172,17 +1215,29 @@ function handleManagerForm(form) {
     return;
   }
 
+  const managerId = getId("manager");
   school.managers.push({
-    id: getId("manager"),
+    id: managerId,
     name: values.name.trim(),
     role: values.role.trim(),
     email: values.email.trim(),
   });
 
+  // Add a login user entry for the manager in pending state (requires admin approval)
+  loginUsers.push({
+    id: managerId,
+    role: "manager",
+    schoolId: values.schoolId,
+    name: values.name.trim(),
+    email: values.email.trim(),
+    password: values.password?.trim() || "",
+    approved: false,
+  });
+
   form.reset();
   saveData();
   renderShell();
-  showToast("Gestor escolar cadastrado.");
+  showToast("Gestor cadastrado e pendente de aprovação.");
 }
 
 function handleTeacherForm(form) {
@@ -1264,26 +1319,30 @@ function handleContactForm(form) {
   showToast("Solicitação enviada.");
 }
 
-document.querySelectorAll("[data-login-role]").forEach((button) => {
-  button.addEventListener("click", () => updateLoginRole(button.dataset.loginRole));
-});
-
+// Login handling: find user by email, allow admin to access all roles
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const values = getFormData(loginForm);
   const email = values.email.trim().toLowerCase();
-  const password = values.password;
+  const password = values.password || "";
 
-  const user = loginUsers.find(
-    (item) =>
-      item.role === state.selectedLoginRole &&
-      item.email.toLowerCase() === email &&
-      item.password === password,
-  );
+  const user = loginUsers.find((item) => item.email.toLowerCase() === email);
 
   if (!user) {
-    showLoginError("E-mail ou senha inválidos para o perfil selecionado.");
+    showLoginError("Usuário não encontrado. Tente entrar com sua conta Google ou registre-se.");
+    return;
+  }
+
+  // If manager, require approval
+  if (user.role === "manager" && !user.approved) {
+    showLoginError("Conta de gestor pendente de aprovação pelo administrador.");
+    return;
+  }
+
+  // Password check: allow empty passwords for OAuth-created accounts
+  if (user.password && user.password !== password) {
+    showLoginError("Senha incorreta.");
     return;
   }
 
@@ -1298,6 +1357,56 @@ loginForm.addEventListener("submit", (event) => {
   enterApp(user.role);
   showToast(`Bem-vindo(a), ${user.name}`);
 });
+
+// Simulated Google Sign-In (client-side): prompts for email and signs in or creates pending account
+function googleSignIn() {
+  const email = (window.prompt("Entre com o e-mail Google para simular sign-in:") || "").trim().toLowerCase();
+  if (!email) {
+    return showLoginError("E-mail não informado.");
+  }
+
+  let user = loginUsers.find((u) => u.email.toLowerCase() === email);
+  if (user) {
+    if (user.role === "manager" && !user.approved) {
+      return showLoginError("Conta de gestor pendente de aprovação.");
+    }
+    state.currentUser = user;
+    state.currentRole = user.role;
+    if (user.schoolId) state.activeSchoolId = user.schoolId;
+    enterApp(user.role);
+    return showToast(`Bem-vindo(a), ${user.name}`);
+  }
+
+  // Create a guardian account by default (pending approval)
+  const id = getId("guardian");
+  const name = email.split("@")[0].replace(/[._]/g, " ");
+  const schoolId = state.data.schools[0]?.id || "";
+
+  const newUser = {
+    id,
+    role: "guardian",
+    schoolId,
+    name: name.charAt(0).toUpperCase() + name.slice(1),
+    email,
+    password: "",
+    approved: false,
+  };
+
+  loginUsers.push(newUser);
+  state.data.guardians.push({
+    id,
+    schoolId,
+    name: newUser.name,
+    phone: "",
+    email,
+    studentName: "",
+  });
+  saveData();
+
+  showToast("Conta criada via Google e pendente de aprovação pelo gestor.");
+}
+
+document.getElementById("googleSignInBtn")?.addEventListener("click", googleSignIn);
 
 appView.addEventListener("click", (event) => {
   const roleButton = event.target.closest("[data-role-nav]");
@@ -1318,6 +1427,19 @@ appView.addEventListener("click", (event) => {
 
   if (logoutButton) {
     leaveApp();
+  }
+
+  const approveBtn = event.target.closest("[data-approve-manager]");
+  if (approveBtn) {
+    const id = approveBtn.dataset.approveManager;
+    const user = loginUsers.find((u) => u.id === id && u.role === "manager");
+    if (user) {
+      user.approved = true;
+      showToast(`Gestor ${user.name} aprovado.`);
+      saveData();
+      renderShell();
+    }
+    return;
   }
 });
 

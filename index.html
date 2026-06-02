@@ -56,31 +56,10 @@
         </div>
 
         <form id="loginForm" class="login-form">
-          <fieldset class="role-picker" aria-label="Tipo de acesso">
-            <legend>Escolha seu perfil</legend>
-            <div class="role-buttons">
-              <button type="button" class="role-option is-active" data-login-role="admin" title="Administrador">
-                <span class="role-icon">🔐</span>
-                <span class="role-name">Admin</span>
-              </button>
-              <button type="button" class="role-option" data-login-role="manager" title="Gestão escolar">
-                <span class="role-icon">👨‍💼</span>
-                <span class="role-name">Gestor</span>
-              </button>
-              <button type="button" class="role-option" data-login-role="teacher" title="Professor">
-                <span class="role-icon">👨‍🏫</span>
-                <span class="role-name">Prof</span>
-              </button>
-              <button type="button" class="role-option" data-login-role="student" title="Aluno">
-                <span class="role-icon">👨‍🎓</span>
-                <span class="role-name">Aluno</span>
-              </button>
-              <button type="button" class="role-option" data-login-role="guardian" title="Responsável">
-                <span class="role-icon">👨‍👧</span>
-                <span class="role-name">Resp</span>
-              </button>
-            </div>
-          </fieldset>
+          <div class="login-card-top">
+            <h2 id="loginTitle">Entrar no diário</h2>
+            <p class="login-sub">Acesse sua conta — administradores têm acesso total</p>
+          </div>
 
           <div class="form-divider">Credenciais de acesso</div>
 
@@ -95,9 +74,12 @@
           </label>
 
           <div id="loginError" class="login-error" aria-live="assertive"></div>
-          <button type="submit" class="btn primary btn-submit">Entrar no Sistema</button>
-          
-          <p class="login-hint">💡 Dica: Use perfis de teste para explorar o sistema</p>
+          <button type="submit" class="btn primary btn-submit">Entrar</button>
+
+          <div class="or-line"><span>ou</span></div>
+          <button type="button" id="googleSignInBtn" class="btn google">Entrar com Google</button>
+
+          <p class="login-hint">Se for a primeira vez com Google, a conta será criada e ficará pendente de aprovação.</p>
         </form>
       </main>
     </div>

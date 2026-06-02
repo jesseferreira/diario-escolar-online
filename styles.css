@@ -245,6 +245,16 @@ button {
   text-align: left;
 }
 
+.login-card-top h2 {
+  margin: 0 0 6px 0;
+  font-size: 1.6rem;
+}
+
+.login-sub {
+  margin: 0;
+  color: var(--muted);
+}
+
 .eyebrow {
   margin: 0 0 6px;
   color: var(--teal-strong);
@@ -264,8 +274,8 @@ button {
 
 .login-form {
   display: grid;
-  gap: 16px;
-  animation: fadeIn 500ms ease-out 100ms both;
+  gap: 14px;
+  animation: fadeIn 450ms ease-out 80ms both;
 }
 
 @keyframes fadeIn {
@@ -487,6 +497,24 @@ textarea:focus {
 .btn-submit {
   width: 100%;
   margin-top: 8px;
+}
+
+.btn.google {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #fff, #fff);
+  color: #444;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.or-line {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 6px 0;
 }
 
 .btn.secondary {
