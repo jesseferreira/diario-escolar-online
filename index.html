@@ -9,8 +9,26 @@
   <body>
     <div id="loginView" class="login-stage">
       <section class="brand-panel" aria-labelledby="brandTitle">
-        <div class="brand-mark" aria-hidden="true">D</div>
-        <h1 id="brandTitle">Diário Escolar Online</h1>
+        <div class="brand-content">
+          <div class="brand-mark" aria-hidden="true">D</div>
+          <h1 id="brandTitle">Diário Escolar Online</h1>
+          <p class="brand-subtitle">Gestão escolar integrada e simplificada</p>
+          
+          <div class="brand-features">
+            <div class="feature-item">
+              <span class="feature-icon">📚</span>
+              <span>Aulas e Diários</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📊</span>
+              <span>Desempenho</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📱</span>
+              <span>Acessível</span>
+            </div>
+          </div>
+        </div>
         <div class="login-visual" aria-hidden="true">
           <div class="visual-top">
             <span></span>
@@ -39,25 +57,47 @@
 
         <form id="loginForm" class="login-form">
           <fieldset class="role-picker" aria-label="Tipo de acesso">
-            <legend>Perfil</legend>
-            <button type="button" class="role-option is-active" data-login-role="admin">Administrador</button>
-            <button type="button" class="role-option" data-login-role="manager">Gestão escolar</button>
-            <button type="button" class="role-option" data-login-role="teacher">Professor</button>
-            <button type="button" class="role-option" data-login-role="student">Aluno</button>
-            <button type="button" class="role-option" data-login-role="guardian">Responsável</button>
+            <legend>Escolha seu perfil</legend>
+            <div class="role-buttons">
+              <button type="button" class="role-option is-active" data-login-role="admin" title="Administrador">
+                <span class="role-icon">🔐</span>
+                <span class="role-name">Admin</span>
+              </button>
+              <button type="button" class="role-option" data-login-role="manager" title="Gestão escolar">
+                <span class="role-icon">👨‍💼</span>
+                <span class="role-name">Gestor</span>
+              </button>
+              <button type="button" class="role-option" data-login-role="teacher" title="Professor">
+                <span class="role-icon">👨‍🏫</span>
+                <span class="role-name">Prof</span>
+              </button>
+              <button type="button" class="role-option" data-login-role="student" title="Aluno">
+                <span class="role-icon">👨‍🎓</span>
+                <span class="role-name">Aluno</span>
+              </button>
+              <button type="button" class="role-option" data-login-role="guardian" title="Responsável">
+                <span class="role-icon">👨‍👧</span>
+                <span class="role-name">Resp</span>
+              </button>
+            </div>
           </fieldset>
 
-          <label>
+          <div class="form-divider">Credenciais de acesso</div>
+
+          <label class="form-field">
             <span>E-mail</span>
-            <input type="email" name="email" placeholder="seuemail@escola.com" autocomplete="email" required />
+            <input type="email" name="email" placeholder="seu.email@escola.com" autocomplete="email" required />
           </label>
 
-          <label>
+          <label class="form-field">
             <span>Senha</span>
             <input type="password" name="password" placeholder="Digite sua senha" autocomplete="current-password" required />
           </label>
 
-          <button type="submit" class="btn primary">Entrar</button>
+          <div id="loginError" class="login-error" aria-live="assertive"></div>
+          <button type="submit" class="btn primary btn-submit">Entrar no Sistema</button>
+          
+          <p class="login-hint">💡 Dica: Use perfis de teste para explorar o sistema</p>
         </form>
       </main>
     </div>

@@ -23,6 +23,104 @@ const roles = {
   },
 };
 
+const loginUsers = [
+  {
+    id: "admin_default",
+    role: "admin",
+    name: "Administrador do sistema",
+    email: "admin@diario.com",
+    password: "admin123",
+  },
+  {
+    id: "manager_marina",
+    role: "manager",
+    schoolId: "school_aurora",
+    name: "Marina Costa",
+    email: "marina.costa@aurora.edu.br",
+    password: "gestao123",
+  },
+  {
+    id: "manager_otavio",
+    role: "manager",
+    schoolId: "school_rios",
+    name: "Otávio Lima",
+    email: "otavio.lima@rios.edu.br",
+    password: "gestao123",
+  },
+  {
+    id: "teacher_luana",
+    role: "teacher",
+    schoolId: "school_aurora",
+    name: "Luana Martins",
+    email: "luana.martins@aurora.edu.br",
+    password: "prof123",
+  },
+  {
+    id: "teacher_rafael",
+    role: "teacher",
+    schoolId: "school_aurora",
+    name: "Rafael Andrade",
+    email: "rafael.andrade@aurora.edu.br",
+    password: "prof123",
+  },
+  {
+    id: "teacher_bianca",
+    role: "teacher",
+    schoolId: "school_rios",
+    name: "Bianca Nunes",
+    email: "bianca.nunes@rios.edu.br",
+    password: "prof123",
+  },
+  {
+    id: "student_alice",
+    role: "student",
+    schoolId: "school_aurora",
+    name: "Alice Ferreira",
+    email: "alice.ferreira@aurora.edu.br",
+    password: "aluno123",
+  },
+  {
+    id: "student_mateus",
+    role: "student",
+    schoolId: "school_aurora",
+    name: "Mateus Ribeiro",
+    email: "mateus.ribeiro@aurora.edu.br",
+    password: "aluno123",
+  },
+  {
+    id: "student_julia",
+    role: "student",
+    schoolId: "school_rios",
+    name: "Júlia Santos",
+    email: "julia.santos@rios.edu.br",
+    password: "aluno123",
+  },
+  {
+    id: "guardian_paula",
+    role: "guardian",
+    schoolId: "school_aurora",
+    name: "Paula Ferreira",
+    email: "paula.ferreira@email.com",
+    password: "resp123",
+  },
+  {
+    id: "guardian_carlos",
+    role: "guardian",
+    schoolId: "school_aurora",
+    name: "Carlos Ribeiro",
+    email: "carlos.ribeiro@email.com",
+    password: "resp123",
+  },
+  {
+    id: "guardian_renata",
+    role: "guardian",
+    schoolId: "school_rios",
+    name: "Renata Santos",
+    email: "renata.santos@email.com",
+    password: "resp123",
+  },
+];
+
 const seedData = {
   schools: [
     {
@@ -34,6 +132,7 @@ const seedData = {
       managers: [
         {
           id: "manager_marina",
+          schoolId: "school_aurora",
           name: "Marina Costa",
           email: "marina.costa@aurora.edu.br",
           role: "Diretora escolar",
@@ -49,6 +148,7 @@ const seedData = {
       managers: [
         {
           id: "manager_otavio",
+          schoolId: "school_rios",
           name: "Otávio Lima",
           email: "otavio.lima@rios.edu.br",
           role: "Coordenador pedagógico",
@@ -162,6 +262,7 @@ const seedData = {
 const state = {
   selectedLoginRole: "admin",
   currentRole: "admin",
+  currentUser: null,
   managerTab: "teachers",
   activeSchoolId: "",
   selectedStudentId: "",
@@ -172,6 +273,7 @@ const state = {
 const loginView = document.querySelector("#loginView");
 const appView = document.querySelector("#appView");
 const loginForm = document.querySelector("#loginForm");
+const loginError = document.querySelector("#loginError");
 const screenRoot = document.querySelector("#screenRoot");
 const roleLabel = document.querySelector("#roleLabel");
 const screenTitle = document.querySelector("#screenTitle");
@@ -179,6 +281,7 @@ const schoolSelector = document.querySelector("#schoolSelector");
 const toast = document.querySelector("#toast");
 
 let toastTimer = 0;
+let loginErrorTimer = 0;
 
 function loadData() {
   const freshData = JSON.parse(JSON.stringify(seedData));
@@ -240,6 +343,19 @@ function showToast(message) {
   }, 2600);
 }
 
+function showLoginError(message) {
+  if (!loginError) {
+    return;
+  }
+
+  window.clearTimeout(loginErrorTimer);
+  loginError.textContent = message;
+  loginError.classList.add("is-visible");
+  loginErrorTimer = window.setTimeout(() => {
+    loginError.classList.remove("is-visible");
+  }, 3200);
+}
+
 function ensureActiveSchool() {
   if (!state.data.schools.length) {
     state.activeSchoolId = "";
@@ -254,6 +370,8 @@ function ensureActiveSchool() {
 
 function updateLoginRole(role) {
   state.selectedLoginRole = role;
+  loginError.textContent = "";
+  loginError.classList.remove("is-visible");
   document.querySelectorAll("[data-login-role]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.loginRole === role);
   });
@@ -268,6 +386,7 @@ function enterApp(role) {
 }
 
 function leaveApp() {
+  state.currentUser = null;
   appView.hidden = true;
   loginView.hidden = false;
   loginForm.reset();
@@ -277,11 +396,14 @@ function leaveApp() {
 function renderShell() {
   ensureActiveSchool();
   const role = roles[state.currentRole];
-  roleLabel.textContent = role.label;
+  const userName = state.currentUser ? ` • ${state.currentUser.name}` : "";
+  roleLabel.textContent = `${role.label}${userName}`;
   screenTitle.textContent = role.title;
 
   document.querySelectorAll("[data-role-nav]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.roleNav === state.currentRole);
+    const isVisible = button.dataset.roleNav === state.currentRole;
+    button.hidden = !isVisible;
+    button.classList.toggle("is-active", isVisible);
   });
 
   renderSchoolSelector();
@@ -1148,7 +1270,33 @@ document.querySelectorAll("[data-login-role]").forEach((button) => {
 
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  enterApp(state.selectedLoginRole);
+
+  const values = getFormData(loginForm);
+  const email = values.email.trim().toLowerCase();
+  const password = values.password;
+
+  const user = loginUsers.find(
+    (item) =>
+      item.role === state.selectedLoginRole &&
+      item.email.toLowerCase() === email &&
+      item.password === password,
+  );
+
+  if (!user) {
+    showLoginError("E-mail ou senha inválidos para o perfil selecionado.");
+    return;
+  }
+
+  loginError.textContent = "";
+  state.currentUser = user;
+  state.currentRole = user.role;
+
+  if (user.schoolId) {
+    state.activeSchoolId = user.schoolId;
+  }
+
+  enterApp(user.role);
+  showToast(`Bem-vindo(a), ${user.name}`);
 });
 
 appView.addEventListener("click", (event) => {
