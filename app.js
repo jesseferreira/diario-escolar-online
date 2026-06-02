@@ -275,6 +275,7 @@ const state = {
   activeSchoolId: "",
   selectedStudentId: "",
   selectedGuardianId: "",
+  loginRequests: [],
   data: loadData(),
 };
 
@@ -287,6 +288,8 @@ const roleLabel = document.querySelector("#roleLabel");
 const screenTitle = document.querySelector("#screenTitle");
 const schoolSelector = document.querySelector("#schoolSelector");
 const toast = document.querySelector("#toast");
+const googleModal = document.querySelector("#googleModal");
+const googleAccountsList = document.querySelector("#googleAccountsList");
 
 let toastTimer = 0;
 let loginErrorTimer = 0;
@@ -1497,3 +1500,4 @@ screenRoot.addEventListener("submit", (event) => {
 
 ensureActiveSchool();
 updateLoginRole(state.selectedLoginRole);
+

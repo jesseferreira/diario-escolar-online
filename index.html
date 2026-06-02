@@ -17,15 +17,15 @@
           <div class="brand-features">
             <div class="feature-item">
               <span class="feature-icon">📚</span>
-              <span>Aulas e Diários</span>
+              <span>Registro de frequência e de Aulas</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">📊</span>
-              <span>Desempenho</span>
+              <span>Acompanhamento do Desempenho</span>
             </div>
             <div class="feature-item">
               <span class="feature-icon">📱</span>
-              <span>Acessível</span>
+              <span>Super Acessível e Automatizado</span>
             </div>
           </div>
         </div>
@@ -51,17 +51,15 @@
 
       <main class="login-card" aria-labelledby="loginTitle">
         <div class="login-heading">
-          <p class="eyebrow">Acesso</p>
-          <h2 id="loginTitle">Entrar no diário</h2>
+          <p class="eyebrow"></p>
         </div>
 
         <form id="loginForm" class="login-form">
           <div class="login-card-top">
             <h2 id="loginTitle">Entrar no diário</h2>
-            <p class="login-sub">Acesse sua conta — administradores têm acesso total</p>
+            <p class="login-sub">Acesse sua conta </p>
           </div>
 
-          <div class="form-divider">Credenciais de acesso</div>
 
           <label class="form-field">
             <span>E-mail</span>
@@ -79,9 +77,23 @@
           <div class="or-line"><span>ou</span></div>
           <button type="button" id="googleSignInBtn" class="btn google">Entrar com Google</button>
 
-          <p class="login-hint">Se for a primeira vez com Google, a conta será criada e ficará pendente de aprovação.</p>
+          <p class="login-hint">Entrar com Google requer autorização do gestor da sua escola.</p>
         </form>
       </main>
+    </div>
+
+    <div id="googleModal" class="google-modal" hidden>
+      <div class="google-modal-content">
+        <div class="google-modal-header">
+          <h3>Escolha uma conta</h3>
+          <button type="button" class="close-btn" aria-label="Fechar">×</button>
+        </div>
+        <div id="googleAccountsList" class="google-accounts-list"></div>
+        <div class="google-modal-footer">
+          <button type="button" id="googleUseAnotherBtn" class="btn ghost">Usar outra conta</button>
+        </div>
+      </div>
+      <div class="google-modal-backdrop" aria-hidden="true"></div>
     </div>
 
     <div id="appView" class="app-shell" hidden>

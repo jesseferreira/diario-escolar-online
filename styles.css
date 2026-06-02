@@ -5,7 +5,7 @@
   --ink: #20302d;
   --muted: #6d7671;
   --line: #dedbd1;
-  --teal: #117c73;
+  --teal: #338f17;
   --teal-strong: #0a5f57;
   --green: #6f8f49;
   --amber: #d89b28;
@@ -515,6 +515,124 @@ textarea:focus {
   color: var(--muted);
   font-size: 0.9rem;
   margin: 6px 0;
+}
+
+/* Google Account Selector Modal */
+.google-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.google-modal:not([hidden]) {
+  display: flex;
+}
+
+.google-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.google-modal-content {
+  position: relative;
+  z-index: 1001;
+  width: 90%;
+  max-width: 420px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideIn 300ms ease-out;
+}
+
+.google-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.google-modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+
+.google-accounts-list {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.google-account-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.google-account-btn:hover {
+  border-color: var(--teal);
+  background: #f0f9f7;
+}
+
+.google-account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--amber));
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.google-account-info {
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.google-account-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+.google-account-email {
+  font-size: 0.85rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-modal-footer {
+  padding: 16px;
+  border-top: 1px solid var(--line);
+  text-align: center;
 }
 
 .btn.secondary {
