@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diário Escolar Online</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="loginView" class="login-stage">
+      <section class="brand-panel" aria-labelledby="brandTitle">
+        <div class="brand-mark" aria-hidden="true">D</div>
+        <h1 id="brandTitle">Diário Escolar Online</h1>
+        <div class="login-visual" aria-hidden="true">
+          <div class="visual-top">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="visual-grid">
+            <span class="block wide teal"></span>
+            <span class="block amber"></span>
+            <span class="block green"></span>
+            <span class="block coral"></span>
+            <span class="block wide ink"></span>
+            <span class="block green"></span>
+            <span class="block amber"></span>
+            <span class="block coral"></span>
+            <span class="block wide teal"></span>
+          </div>
+        </div>
+      </section>
+
+      <main class="login-card" aria-labelledby="loginTitle">
+        <div class="login-heading">
+          <p class="eyebrow">Acesso</p>
+          <h2 id="loginTitle">Entrar no diário</h2>
+        </div>
+
+        <form id="loginForm" class="login-form">
+          <fieldset class="role-picker" aria-label="Tipo de acesso">
+            <legend>Perfil</legend>
+            <button type="button" class="role-option is-active" data-login-role="admin">Administrador</button>
+            <button type="button" class="role-option" data-login-role="manager">Gestão escolar</button>
+            <button type="button" class="role-option" data-login-role="teacher">Professor</button>
+            <button type="button" class="role-option" data-login-role="student">Aluno</button>
+            <button type="button" class="role-option" data-login-role="guardian">Responsável</button>
+          </fieldset>
+
+          <label>
+            <span>E-mail</span>
+            <input type="email" name="email" placeholder="seuemail@escola.com" autocomplete="email" required />
+          </label>
+
+          <label>
+            <span>Senha</span>
+            <input type="password" name="password" placeholder="Digite sua senha" autocomplete="current-password" required />
+          </label>
+
+          <button type="submit" class="btn primary">Entrar</button>
+        </form>
+      </main>
+    </div>
+
+    <div id="appView" class="app-shell" hidden>
+      <aside class="sidebar" aria-label="Navegação principal">
+        <div class="sidebar-brand">
+          <span class="brand-mark small" aria-hidden="true">D</span>
+          <strong>Diário Escolar Online</strong>
+        </div>
+        <nav class="role-nav" aria-label="Perfis">
+          <button type="button" class="nav-item" data-role-nav="admin">
+            <span class="nav-icon" aria-hidden="true">A</span>
+            Administrador
+          </button>
+          <button type="button" class="nav-item" data-role-nav="manager">
+            <span class="nav-icon" aria-hidden="true">G</span>
+            Gestão escolar
+          </button>
+          <button type="button" class="nav-item" data-role-nav="teacher">
+            <span class="nav-icon" aria-hidden="true">P</span>
+            Professores
+          </button>
+          <button type="button" class="nav-item" data-role-nav="student">
+            <span class="nav-icon" aria-hidden="true">E</span>
+            Alunos
+          </button>
+          <button type="button" class="nav-item" data-role-nav="guardian">
+            <span class="nav-icon" aria-hidden="true">R</span>
+            Responsáveis
+          </button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p id="roleLabel" class="eyebrow">Administrador</p>
+            <h2 id="screenTitle">Painel</h2>
+          </div>
+          <div class="topbar-actions">
+            <select id="schoolSelector" class="school-select" aria-label="Escola ativa"></select>
+            <button type="button" class="btn ghost" data-logout>Sair</button>
+          </div>
+        </header>
+
+        <main id="screenRoot" class="screen-root"></main>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
